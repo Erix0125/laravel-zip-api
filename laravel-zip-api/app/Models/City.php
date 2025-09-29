@@ -10,10 +10,10 @@ class City extends Model
 
     public $timestamps = false;
 
-    public $incrementing = false;
+    public $incrementing = true;
 
     protected $fillable = [
-        'id',
+        'zip_code',
         'name',
         'county_id'
     ];

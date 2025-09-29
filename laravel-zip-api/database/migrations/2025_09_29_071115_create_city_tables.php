@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('cities', function (Blueprint $table) {
-            $table->unsignedSmallInteger('id')->primary();
+            $table->id();
+            $table->unsignedSmallInteger('zip_code');
             $table->string('name', 255);
             $table->unsignedTinyInteger('county_id');
             $table->foreign('county_id')->references('id')->on('counties');
