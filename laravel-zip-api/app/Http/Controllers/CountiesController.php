@@ -8,6 +8,14 @@ use PHPUnit\Framework\Constraint\Count;
 
 class CountiesController extends Controller
 {
+    /**
+     * @api {get} /counties List all counties
+     * @apiName GetCounties
+     * @apiGroup County
+     * @apiSuccess {Object[]} counties List of counties.
+     * @apiSuccess {Number} counties.id County ID.
+     * @apiSuccess {String} counties.name County name.
+     */
     function index()
     {
         return response()->json([
@@ -15,6 +23,16 @@ class CountiesController extends Controller
         ]);
     }
 
+    /**
+     * @api {post} /counties Create a new county
+     * @apiName CreateCounty
+     * @apiGroup County
+     * @apiHeader {String} Authorization Bearer token.
+     * @apiBody {String} name County name.
+     * @apiSuccess (201) {String} message Success message.
+     * @apiSuccess (201) {Object} county Created county object.
+     * @apiError (401) Unauthorized Only authenticated users can create.
+     */
     function create(Request $request)
     {
         $county = County::create([
@@ -27,6 +45,18 @@ class CountiesController extends Controller
         ], 201);
     }
 
+    /**
+     * @api {patch} /counties/:id Modify a county
+     * @apiName ModifyCounty
+     * @apiGroup County
+     * @apiHeader {String} Authorization Bearer token.
+     * @apiParam {Number} id County's unique ID.
+     * @apiBody {String} [name] County name.
+     * @apiSuccess {String} message Success message.
+     * @apiSuccess {Object} county Updated county object.
+     * @apiError (404) CountyNotFound County not found.
+     * @apiError (401) Unauthorized Only authenticated users can modify.
+     */
     function modify(Request $request, $id)
     {
         $county = County::find($id);
@@ -45,6 +75,16 @@ class CountiesController extends Controller
         ]);
     }
 
+    /**
+     * @api {delete} /counties/:id Delete a county
+     * @apiName DeleteCounty
+     * @apiGroup County
+     * @apiHeader {String} Authorization Bearer token.
+     * @apiParam {Number} id County's unique ID.
+     * @apiSuccess {String} message Success message.
+     * @apiError (404) CountyNotFound County not found.
+     * @apiError (401) Unauthorized Only authenticated users can delete.
+     */
     function delete($id)
     {
         $county = County::find($id);

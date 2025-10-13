@@ -9,6 +9,18 @@ use App\Models\County;
 
 class CitiesController extends Controller
 {
+    /**
+     * @api {get} /counties/:county_id/cities List all cities in a county
+     * @apiName GetCities
+     * @apiGroup City
+     * @apiParam {Number} county_id County's unique ID.
+     * @apiSuccess {Object[]} cities List of cities.
+     * @apiSuccess {Number} cities.id City ID.
+     * @apiSuccess {String} cities.name City name.
+     * @apiSuccess {String} cities.zip City zip code.
+     * @apiSuccess {String} cities.county County name.
+     * @apiError (404) CountyNotFound County not found.
+     */
     function index($county_id)
     {
         $county = County::find($county_id);
@@ -30,6 +42,19 @@ class CitiesController extends Controller
         ]);
     }
 
+    /**
+     * @api {post} /counties/:county_id/cities Create a new city in a county
+     * @apiName CreateCity
+     * @apiGroup City
+     * @apiHeader {String} Authorization Bearer token.
+     * @apiParam {Number} county_id County's unique ID.
+     * @apiBody {String} name City name.
+     * @apiBody {String} zip_code City zip code.
+     * @apiSuccess (201) {String} message Success message.
+     * @apiSuccess (201) {Object} city Created city object.
+     * @apiError (404) CountyNotFound County not found.
+     * @apiError (401) Unauthorized Only authenticated users can create.
+     */
     function create(CityRequest $request, $county_id)
     {
         $county = County::find($county_id);
@@ -53,6 +78,21 @@ class CitiesController extends Controller
         ], 201);
     }
 
+    /**
+     * @api {patch} /counties/:county_id/cities/:city_id Modify a city in a county
+     * @apiName ModifyCity
+     * @apiGroup City
+     * @apiHeader {String} Authorization Bearer token.
+     * @apiParam {Number} county_id County's unique ID.
+     * @apiParam {Number} city_id City's unique ID.
+     * @apiBody {String} [name] City name.
+     * @apiBody {String} [zip_code] City zip code.
+     * @apiSuccess {String} message Success message.
+     * @apiSuccess {Object} city Updated city object.
+     * @apiError (404) CountyNotFound County not found.
+     * @apiError (404) CityNotFound City not found in the specified county.
+     * @apiError (401) Unauthorized Only authenticated users can modify.
+     */
     function modify(CityRequest $request, $county_id, $city_id)
     {
         $county = County::find($county_id);
@@ -77,6 +117,18 @@ class CitiesController extends Controller
         ]);
     }
 
+    /**
+     * @api {delete} /counties/:county_id/cities/:city_id Delete a city in a county
+     * @apiName DeleteCity
+     * @apiGroup City
+     * @apiHeader {String} Authorization Bearer token.
+     * @apiParam {Number} county_id County's unique ID.
+     * @apiParam {Number} city_id City's unique ID.
+     * @apiSuccess {String} message Success message.
+     * @apiError (404) CountyNotFound County not found.
+     * @apiError (404) CityNotFound City not found in the specified county.
+     * @apiError (401) Unauthorized Only authenticated users can delete.
+     */
     function delete($county_id, $city_id)
     {
         $county = County::find($county_id);
@@ -100,6 +152,14 @@ class CitiesController extends Controller
         ]);
     }
 
+    /**
+     * @api {get} /counties/:county_id/abc List first letters of city names in a county
+     * @apiName GetCityFirstLetters
+     * @apiGroup City
+     * @apiParam {Number} county_id County's unique ID.
+     * @apiSuccess {String[]} letters List of first letters (uppercase).
+     * @apiError (404) CountyNotFound County not found.
+     */
     function abc($county_id)
     {
         $county = County::find($county_id);
@@ -122,6 +182,15 @@ class CitiesController extends Controller
         ]);
     }
 
+    /**
+     * @api {get} /counties/:county_id/abc/:letter List cities in a county starting with a letter
+     * @apiName GetCitiesByFirstLetter
+     * @apiGroup City
+     * @apiParam {Number} county_id County's unique ID.
+     * @apiParam {String} letter First letter of city name (uppercase).
+     * @apiSuccess {Object[]} cities List of cities.
+     * @apiError (404) CountyNotFound County not found.
+     */
     function abcFiltered($county_id, $letter)
     {
         $county = County::find($county_id);
