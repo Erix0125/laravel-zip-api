@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedSmallInteger('zip_code');
             $table->string('name', 255);
-            $table->unsignedTinyInteger('county_id');
-            $table->foreign('county_id')->references('id')->on('counties');
+            $table->foreignId('county_id')->constrained('counties')->onDelete('cascade');
         });
     }
 

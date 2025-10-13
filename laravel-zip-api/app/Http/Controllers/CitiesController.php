@@ -9,25 +9,40 @@ use App\Models\County;
 
 class CitiesController extends Controller
 {
-    function index()
+    function index($county_id)
     {
-        $cities = City::with('county')->get()->map(fn($city) => [
-            'id' => $city->id,
-            'name' => $city->name,
-            'zip' => $city->zip_code,
-            'county' => $city->county ? $city->county->name : null,
-        ]);
+        $county = County::find($county_id);
+        if (!$county) {
+            return response()->json([
+                'message' => 'County not found'
+            ], 404);
+        }
+        $cities = City::where('county_id', $county_id)->get()->map(function ($city) use ($county) {
+            return [
+                'id' => $city->id,
+                'name' => $city->name,
+                'zip' => $city->zip_code,
+                'county' => $county->name,
+            ];
+        });
         return response()->json([
             'cities' => $cities
         ]);
     }
 
-    function create(CityRequest $request)
+    function create(CityRequest $request, $county_id)
     {
+        $county = County::find($county_id);
+        if (!$county) {
+            return response()->json([
+                'message' => 'County not found'
+            ], 404);
+        }
+
         $data = [
             'name' => $request->input('name'),
             'zip_code' => $request->input('zip_code'),
-            'county_id' => County::where('name', $request->input('county'))->value('id'),
+            'county_id' => $county_id,
         ];
 
         $city = City::create($data);
@@ -36,5 +51,52 @@ class CitiesController extends Controller
             'message' => 'City created successfully',
             'city' => $city
         ], 201);
+    }
+
+    function modify(CityRequest $request, $county_id, $city_id)
+    {
+        $county = County::find($county_id);
+        if (!$county) {
+            return response()->json([
+                'message' => 'County not found'
+            ], 404);
+        }
+
+        $city = City::where('id', $city_id)->where('county_id', $county_id)->first();
+        if (!$city) {
+            return response()->json([
+                'message' => 'City not found in the specified county'
+            ], 404);
+        }
+
+        $city->update($request->all());
+
+        return response()->json([
+            'message' => 'City updated successfully',
+            'city' => $city
+        ]);
+    }
+
+    function delete($county_id, $city_id)
+    {
+        $county = County::find($county_id);
+        if (!$county) {
+            return response()->json([
+                'message' => 'County not found'
+            ], 404);
+        }
+
+        $city = City::where('id', $city_id)->where('county_id', $county_id)->first();
+        if (!$city) {
+            return response()->json([
+                'message' => 'City not found in the specified county'
+            ], 404);
+        }
+
+        $city->delete();
+
+        return response()->json([
+            'message' => 'City deleted successfully'
+        ]);
     }
 }

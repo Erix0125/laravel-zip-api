@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CityRequest extends FormRequest
+class CountyRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -21,16 +21,9 @@ class CityRequest extends FormRequest
      */
     public function rules(): array
     {
-        if ($this->isMethod('patch')) {
-            return [
-                'name' => 'sometimes|required|string|max:255',
-                'zip_code' => 'sometimes|required|integer|min:1000|max:9999',
-            ];
-        }
-
         return [
-            'name' => 'required|string|max:255',
-            'zip_code' => 'required|integer|min:1000|max:9999',
+            'id' => 'required|integer',
+            'name' => 'required|string|max:255|unique:counties,name',
         ];
     }
 }
