@@ -99,4 +99,51 @@ class CitiesController extends Controller
             'message' => 'City deleted successfully'
         ]);
     }
+
+    function abc($county_id)
+    {
+        $county = County::find($county_id);
+        if (!$county) {
+            return response()->json([
+                'message' => 'County not found'
+            ], 404);
+        }
+        $letters = City::where('county_id', $county_id)
+            ->pluck('name')
+            ->map(function ($name) {
+                return mb_strtoupper(mb_substr($name, 0, 1));
+            })
+            ->unique()
+            ->sort()
+            ->values();
+
+        return response()->json([
+            'letters' => $letters
+        ]);
+    }
+
+    function abcFiltered($county_id, $letter)
+    {
+        $county = County::find($county_id);
+        if (!$county) {
+            return response()->json([
+                'message' => 'County not found'
+            ], 404);
+        }
+        $cities = City::where('county_id', $county_id)
+            ->where('name', 'LIKE', $letter . '%')
+            ->get()
+            ->map(function ($city) use ($county) {
+                return [
+                    'id' => $city->id,
+                    'name' => $city->name,
+                    'zip' => $city->zip_code,
+                    'county' => $county->name,
+                ];
+            });
+
+        return response()->json([
+            'cities' => $cities
+        ]);
+    }
 }

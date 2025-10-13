@@ -11,6 +11,8 @@ Route::post('/counties', [CountiesController::class, 'create'])->middleware('aut
 Route::patch('/counties/{id}', [CountiesController::class, 'modify'])->middleware('auth:sanctum');
 Route::delete('/counties/{id}', [CountiesController::class, 'delete'])->middleware('auth:sanctum');
 
+Route::get('/counties/{county_id}/abc', [CitiesController::class, 'abc']);
+Route::get('/counties/{county_id}/abc/{letter}', [CitiesController::class, 'abcFiltered']);
 Route::get('/counties/{county_id}/cities', [CitiesController::class, 'index']);
 Route::post('/counties/{county_id}/cities', [CitiesController::class, 'create'])->middleware('auth:sanctum');
 Route::patch('/counties/{county_id}/cities/{city_id}', [CitiesController::class, 'modify'])->middleware('auth:sanctum');
