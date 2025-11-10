@@ -12,15 +12,6 @@ use Laravel\Sanctum\Sanctum;
 class CountiesTest extends TestCase
 {
     use RefreshDatabase;
-    /**
-     * A basic feature test example.
-     */
-    // public function test_example(): void
-    // {
-    //     $response = $this->get('/');
-
-    //     $response->assertStatus(200);
-    // }
 
     public function test_index_returns_counties()
     {
@@ -68,9 +59,9 @@ class CountiesTest extends TestCase
         $user = User::factory()->create();
         Sanctum::actingAs($user, ['*']);
 
-        $county = County::factory()->create(['name' => 'OldName']);
+        $county = County::factory()->create(['id' => '1', 'name' => 'OldName']);
 
-        $response = $this->patchJson("/api/counties/".$county->id, ['name' => 'NewName']);
+        $response = $this->patchJson("/api/counties/" . $county->id, ['name' => 'NewName']);
 
         $response->assertStatus(200)
             ->assertJsonFragment(['name' => 'NewName']);
@@ -93,7 +84,7 @@ class CountiesTest extends TestCase
         $user = User::factory()->create();
         Sanctum::actingAs($user, ['*']);
 
-        $county = County::factory()->create(['name' => 'ToDelete']);
+        $county = County::factory()->create(['id' => '1', 'name' => 'ToDelete']);
 
         $response = $this->deleteJson("/api/counties/{$county->id}");
 
@@ -102,10 +93,4 @@ class CountiesTest extends TestCase
 
         $this->assertDatabaseMissing('counties', ['id' => $county->id]);
     }
-
-    // $token = $user->createToken('TestToken')->plainTextToken;
-
-    // $response = $this->withHeaders([
-    //     'Authorization' => 'Bearer ' . $token,
-    // ])->postJson...
 }
