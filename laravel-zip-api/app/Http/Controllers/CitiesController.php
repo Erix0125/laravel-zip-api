@@ -176,11 +176,55 @@ class CitiesController extends Controller
                 return mb_strtoupper(mb_substr($name, 0, 1));
             })
             ->unique()
-            ->sort(SORT_LOCALE_STRING)
-            ->values();
+            ->toArray();
+
+        // Hungarian collation sort
+        $hungarianOrder = [
+            'A' => 0,
+            'Á' => 0.5,
+            'B' => 1,
+            'C' => 2,
+            'D' => 3,
+            'E' => 4,
+            'É' => 4.5,
+            'F' => 5,
+            'G' => 6,
+            'H' => 7,
+            'I' => 8,
+            'Í' => 8.5,
+            'J' => 9,
+            'K' => 10,
+            'L' => 11,
+            'M' => 12,
+            'N' => 13,
+            'O' => 14,
+            'Ó' => 14.5,
+            'Ö' => 15,
+            'Ő' => 15.5,
+            'P' => 16,
+            'Q' => 17,
+            'R' => 18,
+            'S' => 19,
+            'T' => 20,
+            'U' => 21,
+            'Ú' => 21.5,
+            'Ü' => 22,
+            'Ű' => 22.5,
+            'V' => 23,
+            'W' => 24,
+            'X' => 25,
+            'Y' => 26,
+            'Z' => 27
+        ];
+
+        usort($letters, function ($a, $b) use ($hungarianOrder) {
+            $orderA = $hungarianOrder[$a] ?? 999;
+            $orderB = $hungarianOrder[$b] ?? 999;
+            return $orderA <=> $orderB;
+        });
 
         return response()->json([
-            'letters' => $letters
+            'letters' => array_values($letters)
         ]);
     }
 
