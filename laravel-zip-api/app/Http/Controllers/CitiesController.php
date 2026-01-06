@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\CityRequest;
 use App\Models\County;
 
+setlocale(LC_COLLATE, 'hu_HU.UTF-8', 'hu_HU', 'hun_HUN', 'hu');
+
 class CitiesController extends Controller
 {
     /**
@@ -174,7 +176,7 @@ class CitiesController extends Controller
                 return mb_strtoupper(mb_substr($name, 0, 1));
             })
             ->unique()
-            ->sort()
+            ->sort(SORT_LOCALE_STRING)
             ->values();
 
         return response()->json([

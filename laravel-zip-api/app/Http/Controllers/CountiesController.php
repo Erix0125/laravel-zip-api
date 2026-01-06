@@ -19,7 +19,7 @@ class CountiesController extends Controller
     function index()
     {
         return response()->json([
-            'cities' => County::all()
+            'counties' => County::all()
         ]);
     }
 
