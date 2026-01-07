@@ -226,6 +226,25 @@ class CitiesController extends Controller
         return response()->json([
             'letters' => array_values($letters)
         ]);
+
+        // $county = County::find($county_id);
+        // if (!$county) {
+        //     return response()->json([
+        //         'message' => 'County not found'
+        //     ], 404);
+        // }
+        // $letters = City::where('county_id', $county_id)
+        //     ->pluck('name')
+        //     ->map(function ($name) {
+        //         return mb_strtoupper(mb_substr($name, 0, 1));
+        //     })
+        //     ->unique()
+        //     ->sort()
+        //     ->values();
+
+        // return response()->json([
+        //     'letters' => $letters
+        // ]);
     }
 
     /**
@@ -239,6 +258,7 @@ class CitiesController extends Controller
      */
     function abcFiltered($county_id, $letter)
     {
+        $letter = mb_strtolower($letter, "UTF-8");
         $county = County::find($county_id);
         if (!$county) {
             return response()->json([
@@ -257,8 +277,15 @@ class CitiesController extends Controller
                 ];
             });
 
+        $count = count($cities);
+        for ($i = 0; $i < $count; $i++) {
+            if (mb_strtolower(mb_substr($cities[$i]['name'], 0, 1, "UTF-8"), "UTF-8") != $letter) {
+                $cities->forget($i);
+            }
+        }
+
         return response()->json([
-            'cities' => $cities
+            'cities' => $cities,
         ]);
     }
 }
