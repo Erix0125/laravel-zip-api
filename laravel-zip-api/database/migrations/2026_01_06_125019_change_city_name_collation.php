@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('cities', function (Blueprint $table) {
-            // We change the column to use Hungarian collation
-            $table->string('name')->collation('utf8mb4_hungarian_ci')->change();
-        });
+        // Only apply collation for MySQL/MariaDB databases
+        if (env('DB_CONNECTION') !== 'sqlite') {
+            Schema::table('cities', function (Blueprint $table) {
+                $table->string('name')->collation('utf8mb4_hungarian_ci')->change();
+            });
+        }
     }
 
     /**
@@ -22,9 +24,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('cities', function (Blueprint $table) {
-            // Rollback to the default if needed
-            $table->string('name')->collation('utf8mb4_unicode_ci')->change();
-        });
+        if (env('DB_CONNECTION') !== 'sqlite') {
+            Schema::table('cities', function (Blueprint $table) {
+                $table->string('name')->collation('utf8mb4_unicode_ci')->change();
+            });
+        }
     }
 };
